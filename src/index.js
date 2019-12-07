@@ -1,32 +1,25 @@
-import sum from "./js/sum";
 import "./styles/style.scss";
 import cities from "./js/cities";
-console.log(sum(1, 2));
-console.log("Proof that it works");
+//import { init } from "./js/init";
+import { getInformation } from "./js/data";
+import { getApi } from "./js/api";
 
-console.log(cities);
+const cityImage = document.querySelector("#location__image");
+const locationSelect = document.querySelector(".location__select");
 
-const locationSelect = document.getElementById("location-select");
-
-locationSelect.addEventListener("change", event => {
+locationSelect.addEventListener("change", async event => {
   const city = event.target.value;
-  const defaulCity = "img/skyline.jpg";
-  const cityImage = document.getElementById("location-img");
-  localStorage.setItem("cityImage", cityImage);
-  console.log(localStorage);
+  const defaultCity = "img/skyline.jpg";
 
   if (!cities[city]) {
-    cityImage.src = defaulCity;
-    return;
+    cityImage.src = defaultCity;
+  } else {
+    cityImage.src = cities[city].url;
   }
+  localStorage.setItem("nameCity", city);
 
-  cityImage.src = cities[city].url;
+  const data = await getApi(city);
+  getInformation(data);
 });
 
-fetch("6b6eaf2f6de7056f1c44e9569ca027ee")
-  .then(response => {
-    return response.json();
-  })
-  .then(result => {
-    console.log(result);
-  });
+init();
